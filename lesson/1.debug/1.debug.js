@@ -5,11 +5,12 @@
  **/
 //这是一个日志记录器的工厂 向控制台写日志
 var debug = require('./debug');
-//生成一个日志记录器 名字叫warn
-var logger_warn = debug('warn');
+//生成一个日志记录器 名字叫warn'
+// set DEBUG=logger:*
+var logger_warn = debug('logger:warn');
 logger_warn('warn');
 
 //生成一个日志记录器 名字叫error
-var logger_error = debug('error');
+var logger_error = debug('ogger:error');
 logger_error('error');
 
