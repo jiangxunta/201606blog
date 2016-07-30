@@ -4,7 +4,7 @@ module.exports = function(name){
      var env = process.env.DEBUG;
      env = env.replace('*','.*')
      if(new RegExp(env).test(name)){
-         console.log(msg);
+         console.log(name+msg);
      }
    }
 }

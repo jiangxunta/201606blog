@@ -3,20 +3,23 @@
 /**
  * Module dependencies.
  */
-
+// express应用 express()
 var app = require('../app');
 var debug = require('debug')('201606blog:server');
 var http = require('http');
 
 /**
  * Get port from environment and store in Express.
+ * 从环境变量中获取端口并且保存在express中
  */
 
 var port = normalizePort(process.env.PORT || '3000');
+//保存变量
 app.set('port', port);
 
 /**
  * Create HTTP server.
+ * 创建一个HTTP服务器
  */
 
 var server = http.createServer(app);
@@ -51,6 +54,7 @@ function normalizePort(val) {
 
 /**
  * Event listener for HTTP server "error" event.
+ * HTTP服务器错误的事件监听
  */
 
 function onError(error) {
@@ -64,11 +68,11 @@ function onError(error) {
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
-    case 'EACCES':
+    case 'EACCES':// ErrorAccess 没有权限
       console.error(bind + ' requires elevated privileges');
       process.exit(1);
       break;
-    case 'EADDRINUSE':
+    case 'EADDRINUSE'://  error address in use
       console.error(bind + ' is already in use');
       process.exit(1);
       break;
