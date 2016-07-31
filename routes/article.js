@@ -38,9 +38,21 @@ router.get('/detail/:_id',function(req,res){
 });
 
 router.get('/delete/:_id',function(req,res){
-    Model('Article').remove({_id:req.params._id},function(err,result){
-        res.redirect('/');
+    Model('Article').findById(req.params._id,function(err,doc){
+        if(doc){
+            if(req.session.user._id == doc.user){
+                Model('Article').remove({_id:req.params._id},function(err,result){
+                    res.redirect('/');
+                })
+            }else{
+                req.flash('error','不是你发表的文章，不能删除');
+                res.redirect('back');
+            }
+        }else{
+            res.redirect('back');
+        }
     })
+
 });
 
 module.exports = router;
