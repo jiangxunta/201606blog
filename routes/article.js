@@ -31,4 +31,16 @@ router.post('/add',auth.checkLogin,function(req,res){
    })
 });
 
+router.get('/detail/:_id',function(req,res){
+    Model('Article').findById(req.params._id,function(err,doc){
+        res.render('article/detail',{title:'文章详情',article:doc});
+    })
+});
+
+router.get('/delete/:_id',function(req,res){
+    Model('Article').remove({_id:req.params._id},function(err,result){
+        res.redirect('/');
+    })
+});
+
 module.exports = router;
