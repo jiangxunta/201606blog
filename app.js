@@ -14,6 +14,7 @@ require('./db');
 var routes = require('./routes/index');
 var user = require('./routes/user');
 var article = require('./routes/article');
+var flash = require('connect-flash');
 var app = express();
 
 // view engine setup
@@ -41,9 +42,13 @@ app.use(session({
     url:settings.url //指定数据库的URL
   })
 }));
+//需要依赖session,所以呢需要放在session中间件之后
+app.use(flash());
 app.use(function(req,res,next){
   // res.locals是真正用来渲染模板的对象
   res.locals.user = req.session.user;
+  res.locals.success = req.flash('success').toString();
+  res.locals.error = req.flash('error').toString();
   next();
 });
 //静态文件中间件

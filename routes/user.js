@@ -9,6 +9,9 @@ router.get('/reg', function(req, res, next) {
 router.post('/reg',function(req,res,next){
   var user = req.body;
   if(user.password != user.repassword){
+    //向session中写入一个消息 类型是error
+     req.flash('error','密码和重复密码不一致');
+     //req.flash('error');//一旦读取之后就立即消失
      return res.redirect('back');
   }
   //1. 对用户密码进行加密
@@ -18,10 +21,12 @@ router.post('/reg',function(req,res,next){
   //向数据库保存用户
   Model('User').create(user,function(err,doc){
      if(err){
+       req.flash('error','注册失败');
        return res.redirect('back');
      }else{
        //实现登陆 如果此客户端在服务器端的session中有user属性的话就表示登陆状态
        req.session.user = doc;
+       req.flash('success','注册成功');
        return res.redirect('/');
      }
   });
@@ -36,12 +41,15 @@ router.post('/login', function(req, res, next) {
   user.password = util.md5(user.password);
   Model('User').findOne(user,function(err,doc){
     if(err){
+      req.flash('error','登陆失败');
       return res.redirect('back');
     }else{
       if(doc){
         req.session.user = doc;
+        req.flash('success','登陆成功');
         return res.redirect('/');
       }else{
+        req.flash('error','登陆失败');
         return res.redirect('/user/reg');
       }
     }
@@ -50,6 +58,7 @@ router.post('/login', function(req, res, next) {
 
 router.get('/logout', function(req, res, next) {
   req.session.user = null;
+  req.flash('success','退出成功');
   return res.redirect('/user/login');
 });
 

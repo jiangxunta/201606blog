@@ -11,8 +11,10 @@ router.post('/add',function(req,res){
    article.user = req.session.user._id;
    Model('Article').create(article,function(err,doc){
        if(err){
+           req.flash('error','发表文章失败');
            res.redirect('back');
        }else{
+           req.flash('success','发表文章成功');
            res.redirect('/');
        }
    })
