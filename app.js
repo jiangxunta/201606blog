@@ -35,12 +35,17 @@ app.use(cookieParser());// req.cookies
 //当使用完此中间件之后会在req上多一个session的属性
 app.use(session({
   secret:settings.cookieSecret,//指定向客户端写cookie时的密钥
-  resave:true,
-  saveUninitialized:true,
-  store:new MongoStore({
-    url:settings.url
+  resave:true,//每次都重新保存session
+  saveUninitialized:true, //保存未初始化的session
+  store:new MongoStore({  //指定保存的位置
+    url:settings.url //指定数据库的URL
   })
 }));
+app.use(function(req,res,next){
+  // res.locals是真正用来渲染模板的对象
+  res.locals.user = req.session.user;
+  next();
+});
 //静态文件中间件
 app.use(express.static(path.join(__dirname, 'public')));
 //以哪个路径开头
