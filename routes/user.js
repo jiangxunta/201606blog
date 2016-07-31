@@ -3,11 +3,11 @@ var util = require('../util');
 var auth = require('../middle');
 var router = express.Router();
 //注册页面
-router.get('/reg',auth.checkNotLogin, function(req, res, next) {
+router.get('/reg',auth.checkNotLogin, function(req, res) {
   res.render('user/reg',{title:'注册'});
 });
 //提交注册表单
-router.post('/reg',auth.checkNotLogin,function(req,res,next){
+router.post('/reg',auth.checkNotLogin,function(req,res){
   var user = req.body;
   if(user.password != user.repassword){
     //向session中写入一个消息 类型是error
@@ -33,11 +33,11 @@ router.post('/reg',auth.checkNotLogin,function(req,res,next){
   });
 });
 //登录页面
-router.get('/login',auth.checkNotLogin, function(req, res, next) {
+router.get('/login',auth.checkNotLogin, function(req, res) {
   res.render('user/login',{title:'登录'});
 });
 
-router.post('/login',auth.checkNotLogin, function(req, res, next) {
+router.post('/login',auth.checkNotLogin, function(req, res) {
   var user = req.body;
   user.password = util.md5(user.password);
   Model('User').findOne(user,function(err,doc){
@@ -57,7 +57,7 @@ router.post('/login',auth.checkNotLogin, function(req, res, next) {
   });
 });
 
-router.get('/logout',auth.checkLogin, function(req, res, next) {
+router.get('/logout',auth.checkLogin, function(req, res) {
   req.session.user = null;
   req.flash('success','退出成功');
   return res.redirect('/user/login');

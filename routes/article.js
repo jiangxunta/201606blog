@@ -1,6 +1,13 @@
 var express = require('express');
 var router = express.Router();
 var auth = require('../middle');
+//显示所有的文章列表 article.user
+router.get('/list',function(req,res){
+    Model('Article').find().populate('user').exec(function(err,docs){
+        res.render('article/list',{title:'文章列表',articles:docs});
+    });
+});
+
 router.get('/add',auth.checkLogin,function(req,res){
     res.render('article/add',{title:'发表文章'});
 });
