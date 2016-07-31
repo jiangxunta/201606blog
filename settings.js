@@ -1,4 +1,4 @@
 module.exports = {
     cookieSecret:'zfpx',//加密cookie
-    url:'mongodb://localhost:27017/201606blog'
+    url:'mongodb://123.57.143.189:27017/201606blog'
 }

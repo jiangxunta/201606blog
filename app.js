@@ -3,11 +3,14 @@ var path = require('path');
 var favicon = require('serve-favicon');
 //是用来记录访问请求
 var logger = require('morgan');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
+var settings = require('./settings');
 //解析cookie req.cookies
 var cookieParser = require('cookie-parser');
 //处理请求体 req.body
 var bodyParser = require('body-parser');
-
+require('./db');
 var routes = require('./routes/index');
 var user = require('./routes/user');
 var article = require('./routes/article');
@@ -29,6 +32,15 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());// req.cookies
+//当使用完此中间件之后会在req上多一个session的属性
+app.use(session({
+  secret:settings.cookieSecret,//指定向客户端写cookie时的密钥
+  resave:true,
+  saveUninitialized:true,
+  store:new MongoStore({
+    url:settings.url
+  })
+}));
 //静态文件中间件
 app.use(express.static(path.join(__dirname, 'public')));
 //以哪个路径开头

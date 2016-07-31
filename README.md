@@ -27,3 +27,11 @@ touch .bowerrc
   {"directory":"./public/lib"}
 bower install bootstrap --save
 ```
+
+
+
+store: new MongoStore({
+    db: settings.db,
+    host: settings.host,
+    port: settings.port,
+  })
