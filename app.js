@@ -67,6 +67,7 @@ app.use(function(req, res, next) {
 //env 读取的是环境变量中的 NODE_ENV
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
+    console.log('err',err);
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
@@ -78,6 +79,7 @@ if (app.get('env') === 'development') {
 // production error handler 生产环境错误处理
 // no stacktraces leaked to user 不要向用户暴露堆栈信息
 app.use(function(err, req, res, next) {
+  console.log('err',err);
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,
