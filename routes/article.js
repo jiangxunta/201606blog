@@ -1,9 +1,13 @@
 var express = require('express');
 var router = express.Router();
 var auth = require('../middle');
+var markdown = require('markdown').markdown;
 //显示所有的文章列表 article.user
 router.get('/list',function(req,res){
     Model('Article').find().populate('user').exec(function(err,docs){
+        docs.forEach(function(doc){
+            doc.content = markdown.toHTML(doc.content);
+        });
         res.render('article/list',{title:'文章列表',articles:docs});
     });
 });
