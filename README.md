@@ -18,3 +18,12 @@ lib
 bower_component
 .idea
 ```
+
+## 初始化bower
+```
+npm install bower -g
+bower init
+touch .bowerrc
+  {"directory":"./public/lib"}
+bower install bootstrap --save
+```
