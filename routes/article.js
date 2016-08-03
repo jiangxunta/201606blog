@@ -3,9 +3,12 @@ var router = express.Router();
 var auth = require('../middle');
 var markdown = require('markdown').markdown;
 //显示所有的文章列表 article.user
+// query传参数  pageNum 当前的页数 pageSize 每页的条数
 router.get('/list',function(req,res){
     //当form表单以get方式发送到后台，会将表单序列化成查询字符串格式并追加在url后面
     var keyword = req.query.keyword;
+    var pageNum = req.query.pageNum?parseInt(req.query.pageNum):1;//如果给了页数取给定的参数，如果没有给，取默认值
+    var pageSize = req.query.pageSize?parseInt(req.query.pageSize):2;//如果给了条数，取条数，如果没有给则取默认条数2
     var query = {};
     //如果说有关键字的话
     if(keyword){
@@ -14,14 +17,20 @@ router.get('/list',function(req,res){
         //拼出一个查询条件
         query['$or'] = [{title:regex},{content:regex}];
     }
-
-    Model('Article').find(query).populate('user').exec(function(err,docs){
-        docs.forEach(function(doc){
-            doc.content = markdown.toHTML(doc.content);
-        });
-        res.render('article/list',{title:'文章列表',
-            articles:docs,
-            keyword:keyword //向模板继续传递keyword
+    //skip是指跳过条数 limit最大取多少条
+    // 2 2 2    3 2 4
+    Model('Article').find(query).count(function(err,count){
+        Model('Article').find(query).skip(pageSize*(pageNum - 1)).limit(pageSize).populate('user').exec(function(err,docs){
+            docs.forEach(function(doc){
+                doc.content = markdown.toHTML(doc.content);
+            });
+            res.render('article/list',{title:'文章列表',
+                articles:docs,//当前记录
+                pageNum:pageNum,//当前页数
+                pageSize:pageSize,//每页条数
+                totalPage:Math.ceil(count/pageSize),//算出总页数
+                keyword:keyword //向模板继续传递keyword
+            });
         });
     });
 });
