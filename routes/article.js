@@ -86,7 +86,7 @@ router.post('/add',auth.checkLogin,function(req,res){
 });
 
 router.get('/detail/:_id',function(req,res){
-    Model('Article').findById(req.params._id,function(err,doc){
+    Model('Article').findById(req.params._id).populate('comments.user').exec(function(err,doc){
         res.render('article/detail',{title:'文章详情',article:doc});
     })
 });
@@ -117,6 +117,35 @@ router.get('/edit/:_id',function(req,res){
   Model('Article').findById(_id,function(err,doc){
       res.render('article/add.html',{title:'修改文章',article:doc});
   })
+});
+
+router.post('/comment',function(req,res){
+    var comment = req.body;// user createAt content
+    comment.user = req.session.user._id;//从session得到用户的ID
+    Model('Article').update({_id:comment.articleId},{
+        $push:{comments:comment}},function(err,newDoc){
+            if(err){
+                req.flash('error','评论失败');
+                res.redirect('back');
+            }else{
+                req.flash('success','评论成功');
+                res.redirect('back');
+            }
+        }
+    );
+    /*Model('Article').findById(comment.articleId,function(err,doc){
+        doc.comments.push(comment);
+        doc.save(function(err,newDoc){
+            if(err){
+                req.flash('error','评论失败');
+                res.redirect('back');
+            }else{
+                req.flash('success','评论成功');
+                res.redirect('back');
+            }
+        });
+    })*/
+
 });
 
 

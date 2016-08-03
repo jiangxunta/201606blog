@@ -14,6 +14,11 @@ mongoose.model('Article',new mongoose.Schema({
     title:{type:String,isRequired:true},    //标题
     content:{type:String,isRequired:true},  //内容
     createAt:{type:Date,default:Date.now()},//创建时间
+    comments:[{//评论的一个数组
+        user:{type:ObjectId,ref:'User'},//评论人
+        content:{type:String},//评论的内容
+        createAt:{type:Date,default:Date.now()}//评论的时间
+    }],
     user:{type:ObjectId,ref:'User'}         //作者
 }));
 //在程序的任何地方都可以调用此方法
