@@ -7,6 +7,8 @@ var markdown = require('markdown').markdown;
 router.get('/list',function(req,res){
     //当form表单以get方式发送到后台，会将表单序列化成查询字符串格式并追加在url后面
     var keyword = req.query.keyword;
+    var orderBy = req.query.orderBy;
+    var order = req.query.order;
     var pageNum = req.query.pageNum?parseInt(req.query.pageNum):1;//如果给了页数取给定的参数，如果没有给，取默认值
     var pageSize = req.query.pageSize?parseInt(req.query.pageSize):2;//如果给了条数，取条数，如果没有给则取默认条数2
     var query = {};
@@ -27,6 +29,8 @@ router.get('/list',function(req,res){
             res.render('article/list',{title:'文章列表',
                 articles:docs,//当前记录
                 pageNum:pageNum,//当前页数
+                orderBy:orderBy,
+                order:order,
                 pageSize:pageSize,//每页条数
                 totalPage:Math.ceil(count/pageSize),//算出总页数
                 keyword:keyword //向模板继续传递keyword
