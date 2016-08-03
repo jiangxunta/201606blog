@@ -5,18 +5,18 @@ var async = require('./async');
  * 当所有的任务都执行完毕之后才会调用回调函数
  */
 console.time('cost');
-async.parallel([
-   function(cb){
+async.parallel({
+   one:function(cb){
       setTimeout(function(){
-          cb(err,1);
+          cb(null,1);
       },3000);
    },
-   function(cb){
+   two:function(cb){
        setTimeout(function(){
            cb(null,2);
        },1000);
    }
-],function(err,result){
+},function(err,result){
     console.timeEnd('cost');
     console.log(result);
 })
