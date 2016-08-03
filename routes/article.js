@@ -13,12 +13,13 @@ router.get('/list',function(req,res){
 });
 
 router.get('/add',auth.checkLogin,function(req,res){
-    res.render('article/add',{title:'发表文章'});
+    res.render('article/add',{title:'发表文章',article:{}});
 });
 
 router.post('/add',auth.checkLogin,function(req,res){
    var article = req.body;//得到请求体
    var _id = article._id;//先得到文章的ID
+    console.log(_id);
    if(_id){//修改
        Model('Article').update(//使用修改器修改对应文章的标题和内容
            {_id:_id},
@@ -36,8 +37,11 @@ router.post('/add',auth.checkLogin,function(req,res){
    }else{//新增加
        //从session中获取当前会话用户的ID
        article.user = req.session.user._id;
+       //因为_id有值，但是是空字符串，所以转成ObjectId失败。所以要删除此属性，让数据库自动生成新的_id
+       delete article._id;
        Model('Article').create(article,function(err,doc){
            if(err){
+               console.log(err);
                req.flash('error','发表文章失败');
                res.redirect('back');
            }else{
