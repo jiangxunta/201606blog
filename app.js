@@ -29,8 +29,8 @@ app.engine('html',require('ejs').__express);
 // 把favicon旋转在/public目录下之后取消掉注释
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 //指定记录请求的中间件，并指定格式
-var accessLog = fs.createWriteStream('access.log',{flags:'a'});
-app.use(logger('dev',{stream:accessLog}));
+/*var accessLog = fs.createWriteStream('access.log',{flags:'a'});*/
+app.use(logger('dev'));
 //处理请求体
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -74,11 +74,11 @@ app.use(function(req, res, next) {
 // development error handler 开发环境错误处理
 // will print stacktrace 将打印推栈信息
 //env 读取的是环境变量中的 NODE_ENV
-var errorLog = fs.createWriteStream('error.log', {flags: 'a'});
+/*var errorLog = fs.createWriteStream('error.log', {flags: 'a'});*/
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     console.log('err',err);
-    errorLog.write(err);
+    //errorLog.write(err);
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
