@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var auth = require('../middle');
+var async = require('async');
 var markdown = require('markdown').markdown;
 //显示所有的文章列表 article.user
 // query传参数  pageNum 当前的页数 pageSize 每页的条数
@@ -86,9 +87,30 @@ router.post('/add',auth.checkLogin,function(req,res){
 });
 
 router.get('/detail/:_id',function(req,res){
-    Model('Article').findById(req.params._id).populate('comments.user').exec(function(err,doc){
-        res.render('article/detail',{title:'文章详情',article:doc});
+    async.parallel({
+        pv:function(cb){
+            Model('Article').update({_id:req.params._id},
+                {$inc:{pv:1}},
+                function(err,result){
+                    cb(err,result);
+                }
+            )
+        },
+        doc:function(cb){
+            Model('Article').findById(req.params._id).populate('comments.user').exec(function(err,doc){
+                cb(err,doc);
+            });
+        }
+    },function(err,result){
+        res.render('article/detail',{title:'文章详情',article:result.doc});
     })
+
+    /*Model('Article').findById(req.params._id).populate('comments.user').exec(function(err,doc){
+        doc.pv = (doc.pv||0) + 1;
+        doc.save(function(err,newDoc){
+            res.render('article/detail',{title:'文章详情',article:doc});
+        });
+    })*/
 });
 
 router.get('/delete/:_id',function(req,res){

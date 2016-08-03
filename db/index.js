@@ -14,6 +14,7 @@ mongoose.model('Article',new mongoose.Schema({
     title:{type:String,isRequired:true},    //标题
     content:{type:String,isRequired:true},  //内容
     createAt:{type:Date,default:Date.now()},//创建时间
+    pv:{type:Number,default:0},//page view浏览量 每访问一次加1
     comments:[{//评论的一个数组
         user:{type:ObjectId,ref:'User'},//评论人
         content:{type:String},//评论的内容
