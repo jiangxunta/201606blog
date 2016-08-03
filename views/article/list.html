@@ -84,11 +84,10 @@
 <script>
     //跳转到指定的页码
     function gotoPage(pageNum){
-        var pageSize = document.querySelector('#pageSize').value;
-        var orderBy = document.querySelector('#orderBy').value;
-        var order = document.querySelector('#order').value;
+        var pageSize = document.querySelector('#pageSize').value;//每页的条数
+        var orderBy = document.querySelector('#orderBy').value;//排序的字段
+        var order = document.querySelector('#order').value;//排序的顺序
         var url = `/article/list?keyword=<%=keyword%>&pageNum=${pageNum}&pageSize=${pageSize}&orderBy=${orderBy}&order=${order}`;
-        console.log(url);
         window.location.href=url;
     }
 </script>
