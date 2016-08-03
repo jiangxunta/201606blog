@@ -4,13 +4,28 @@ var auth = require('../middle');
 var markdown = require('markdown').markdown;
 //显示所有的文章列表 article.user
 router.get('/list',function(req,res){
-    Model('Article').find().populate('user').exec(function(err,docs){
+    //当form表单以get方式发送到后台，会将表单序列化成查询字符串格式并追加在url后面
+    var keyword = req.query.keyword;
+    var query = {};
+    //如果说有关键字的话
+    if(keyword){
+        //创建一个正则表达式
+        var regex = new RegExp(keyword,'i');
+        //拼出一个查询条件
+        query['$or'] = [{title:regex},{content:regex}];
+    }
+
+    Model('Article').find(query).populate('user').exec(function(err,docs){
         docs.forEach(function(doc){
             doc.content = markdown.toHTML(doc.content);
         });
-        res.render('article/list',{title:'文章列表',articles:docs});
+        res.render('article/list',{title:'文章列表',
+            articles:docs,
+            keyword:keyword //向模板继续传递keyword
+        });
     });
 });
+
 
 router.get('/add',auth.checkLogin,function(req,res){
     res.render('article/add',{title:'发表文章',article:{}});
